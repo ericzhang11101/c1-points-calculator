@@ -1,39 +1,37 @@
-import React, {useState} from 'react'
-import './App.css'; 
-import {TextField, Alert, AlertTitle, Button} from '@mui/material'
-import { tryCalculation } from './utils/calculator.js';
-import PointDisplay from './PointDisplay';
+import { Alert, AlertTitle, Button, TextField } from "@mui/material";
+import React, { useState } from "react";
+import "./App.css";
+import PointDisplay from "./PointDisplay";
+import { tryCalculation } from "./utils/calculator.js";
 
 export default function App() {
-  const [textInput, setTextInput] = useState("")
-  const [pointResult, setPointResult] = useState({})
-  const [shouldDisplayAlert, setShouldDisplayAlert] = useState(false)
+  const [textInput, setTextInput] = useState("");
+  const [pointResult, setPointResult] = useState({});
+  const [shouldDisplayAlert, setShouldDisplayAlert] = useState(false);
   const [errorText, setErrorText] = useState("");
-  
-  function handleChange(e){
-    setTextInput(e.target.value)
-    setShouldDisplayAlert(false)
+
+  function handleChange(e) {
+    setTextInput(e.target.value);
+    setShouldDisplayAlert(false);
   }
 
-  async function submitForm(){
-    setPointResult({})
-    const data = await tryCalculation(textInput)
-    if (data.success){
-      setPointResult(data)
-      console.log(data)
+  async function submitForm() {
+    setPointResult({});
+    const data = await tryCalculation(textInput);
+    if (data.success) {
+      setPointResult(data);
+      console.log(data);
+    } else {
+      handleAlert(data.error);
     }
-    else {
-      handleAlert(data.error)
-    }
-    
   }
 
-  function handleAlert(error){
+  function handleAlert(error) {
     setShouldDisplayAlert(true);
-    setErrorText(error.toString())
+    setErrorText(error.toString());
     setTimeout(() => {
-      setShouldDisplayAlert(false)
-    }, 5000)
+      setShouldDisplayAlert(false);
+    }, 5000);
   }
 
   return (
@@ -43,34 +41,29 @@ export default function App() {
       </div>
       <div className="main-container">
         <div className="container">
-          <TextField 
-            label="Transactions as JSON" 
-            multiline 
-            rows={20} 
+          <TextField
+            label="Transactions as JSON"
+            multiline
+            rows={20}
             required
             id="text-input"
             value={textInput}
             onChange={handleChange}
           />
-          {
-            shouldDisplayAlert
-            &&
+          {shouldDisplayAlert && (
             <Alert severity="error">
               <AlertTitle>Failed to Read JSON</AlertTitle>
               {errorText}
             </Alert>
-          }
-          <Button
-            variant="contained"
-            onClick={submitForm}      
-          >
+          )}
+          <Button variant="contained" onClick={submitForm}>
             Calculate Points !
           </Button>
         </div>
         <div className="container">
-            <PointDisplay data={pointResult} />
+          <PointDisplay data={pointResult} />
         </div>
       </div>
     </div>
-  )
+  );
 }
